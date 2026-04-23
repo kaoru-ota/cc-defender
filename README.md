@@ -14,8 +14,11 @@ Mobile
 
 ## 🚀 Try it now
 
-- **Live demo (GitHub Pages)**: `https://kaoru-ota.github.io/cc-defender/`
-- **Run locally**: single self-contained HTML file — no build step, no server, no dependencies.
+[![▶ Play Live Demo](https://img.shields.io/badge/▶_Play_Live_Demo-2ea44f?style=for-the-badge)](https://kaoru-ota.github.io/cc-defender/)
+
+Or **run locally** — this is a single self-contained HTML file with no build step, no server, and no dependencies:
+
+
 
 ## 🎯 What this tool is for
 
