@@ -12,6 +12,11 @@ Mobile
 <img width="369" height="544" alt="CCD2" src="https://github.com/user-attachments/assets/03a0fb3b-21e7-4cef-bb53-df47d06253ab" />
 </p>
 
+## 🚀 Try it now
+
+- **Live demo (GitHub Pages)**: `https://kaoru-ota.github.io/cc-defender/`
+- **Run locally**: single self-contained HTML file — no build step, no server, no dependencies.
+
 ## 🎯 What this tool is for
 
 - A simulator for developing WFM (Workforce Management) intuition.
