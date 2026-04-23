@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CC DEFENDER2</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Call Center Defender</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -77,15 +78,7 @@ body::after {
 }
 
 #header-phase {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  pointer-events: none;
-  white-space: nowrap;
+  display: none !important;
 }
 #header-phase #forecast-phase-cur { font-size: 13px; font-weight: 700; letter-spacing: 0.10em; }
 #header-phase #header-phase-next { display: inline-flex; align-items: baseline; gap: 5px; font-size: 9px; color: var(--header-ink); opacity: 0.75; letter-spacing: 0.08em; }
@@ -362,12 +355,349 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
 @keyframes recoveryPulse { 0%, 100% { box-shadow: 0 20px 64px rgba(0,0,0,0.50), inset 0 0 0 2px rgba(0,255,65,0.0); } 50% { box-shadow: 0 20px 64px rgba(0,0,0,0.50), inset 0 0 0 2px rgba(0,255,65,0.55); } }
 #game.recovery { animation: recoveryPulse 0.9s ease-out 1; }
 
+/* ============================================================
+   iPhone / small-device landscape layout (height <= 500px)
+   ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  html, body {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+  }
+  #game {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+  #main { min-height: 0; }
+  #right-panel { min-height: 0; overflow: hidden; }
+
+  /* Header */
+  #header { height: 30px; padding: 0 10px; gap: 6px; }
+  #title { font-size: 11px; letter-spacing: 0.14em; }
+  #header-phase { gap: 8px; }
+  #header-phase #forecast-phase-cur { font-size: 10px; }
+  #header-phase #header-phase-next { font-size: 8px; gap: 3px; }
+  #header-phase .ph-tag { font-size: 7px; }
+  #header-right { font-size: 9px; }
+
+  /* Agent panel */
+  #agent-panel { width: 244px; padding: 8px; gap: 6px; }
+  #agent-meta { gap: 6px; }
+  #agent-summary { font-size: 8px; gap: 6px; }
+  #agent-grid { grid-template-columns: repeat(5, 1fr) !important; gap: 4px; }
+  .agent-card { height: 52px; padding: 4px 3px; border-radius: 6px; gap: 1px; overflow: hidden; justify-content: center; }
+  .agent-card .a-bar { height: 2px; }
+  .a-id { font-size: 7px; line-height: 1; }
+  .a-status { font-size: 8px; line-height: 1.1; }
+  .a-timer { font-size: 7px; line-height: 1; }
+  #agent-answer-panel { min-height: 58px; padding-top: 4px; }
+  #agent-change-row { gap: 4px; padding-top: 4px; margin-top: 4px; }
+  #agent-change-row .change-label { font-size: 7px; letter-spacing: 0.10em; }
+  #agent-delta-display { font-size: 12px !important; min-width: 28px !important; }
+  #agent-count-row { margin-top: 4px !important; padding-top: 4px !important; gap: 6px !important; }
+  #agent-count-row span:first-child { font-size: 7px !important; letter-spacing: 0.10em !important; }
+  #agent-count-display { font-size: 13px !important; }
+
+  /* Outlook */
+  #outlook-block { height: 136px; min-height: 0; max-height: 140px; padding: 6px 10px 4px; overflow: hidden; gap: 3px; }
+  #outlook-head { padding: 0; }
+  #forecast-panel { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  #outlook-legend { font-size: 8px; gap: 8px; margin-top: 0; padding: 0; }
+  .section-title { font-size: 8px; }
+  #forecast-chart { flex: 1; min-height: 80px; height: 100%; max-height: 110px; width: 100%; }
+
+  /* Queue */
+  #queue-panel { padding: 3px 10px; gap: 2px; }
+  #queue-calls { height: 22px; gap: 2px; }
+  .call-icon { width: 18px; }
+  .call-phone { font-size: 9px; }
+  .call-pbar { width: 16px; }
+
+  /* Metrics */
+  #metrics-panel { padding: 6px 10px 8px; gap: 8px 14px; grid-template-columns: 1fr 1fr; overflow: hidden; }
+  #kpi-block, #actual-block { min-width: 0; overflow: hidden; }
+  #phase-table { display: none !important; }
+  .metrics-col + .metrics-col { padding-left: 8px; }
+  .metrics-head { font-size: 8px; }
+  .metric-stack, .stat-stack { gap: 6px; }
+  .metric-row { grid-template-columns: 52px 72px 38px 60px; gap: 5px; font-size: 9px; }
+  .m-bar { width: 72px; min-width: 72px; height: 6px; }
+  .m-label, .s-label { font-size: 8px; }
+  .m-val, .s-val { font-size: 9px; }
+  .m-note { font-size: 7px; }
+  .stat-row { font-size: 9px; }
+  .pt-row { grid-template-columns: 76px 24px 20px 24px 26px 26px 28px; font-size: 7px; gap: 3px; padding: 1px 0; overflow: hidden; }
+  .pt-row > span { overflow: hidden; text-overflow: ellipsis; }
+  .pt-head { font-size: 7px; }
+  #phase-table { margin-top: 4px; padding-top: 4px; gap: 1px; overflow: hidden; }
+
+  /* System comment */
+  #result-panel { height: 60px; max-height: 60px; padding: 4px 10px; gap: 2px; }
+  #result-title { font-size: 8px; margin-bottom: 1px; }
+  #result-body { font-size: 8px; line-height: 1.35; }
+  #alert-bar { font-size: 9px; }
+
+  /* Controls */
+  #controls { height: 28px; padding: 0 8px; gap: 6px; }
+  .ctrl-label { font-size: 7px; }
+  .ctrl-btn { font-size: 8px; padding: 2px 6px; }
+  #speed-slider { width: 80px; }
+  #speed-value { font-size: 9px; min-width: 36px; }
+}
+
+/* Extra-short viewports (iPhone SE landscape etc., height <= 380px) */
+@media (max-height: 380px) and (orientation: landscape) {
+  #agent-panel { width: 216px; }
+  .agent-card { height: 42px; }
+  #outlook-block { height: 112px; max-height: 118px; }
+  #forecast-chart { min-height: 66px; max-height: 88px; }
+  #result-panel { height: 50px; max-height: 50px; }
+  #header { height: 26px; }
+  #title { font-size: 10px; }
+  .pt-row { grid-template-columns: 70px 22px 20px 22px 24px 24px 26px; gap: 2px; }
+}
+
+/* ============================================================
+   iPhone / small-device portrait layout (width <= 600px)
+   Stack order: TITLE / FORECAST / QUEUE / AGENTS / KPI / SYSTEM COMMENT / ACTUAL / CONTROLS
+   ============================================================ */
+@media (orientation: portrait) and (max-width: 600px) {
+  html, body {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  body {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0;
+    margin: 0;
+  }
+  #game {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Header (TITLE) */
+  #header { height: 40px; padding: 0 12px; gap: 6px; }
+  #title { font-size: 12px; letter-spacing: 0.16em; }
+  #header-phase { gap: 8px; }
+  #header-phase #forecast-phase-cur { font-size: 11px; }
+  #header-phase #header-phase-next { font-size: 8px; gap: 3px; }
+  #header-phase .ph-tag { font-size: 7px; }
+  #header-right { font-size: 10px; }
+
+  /* Main: stack vertically; flatten right-panel + metrics-panel so children join #main directly.
+     This lets us reorder KPI / SYSTEM COMMENT / ACTUAL independently. */
+  #main {
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  #right-panel { display: contents; }
+  #metrics-panel { display: contents; }
+
+  /* Section order: OUTLOOK=1 / QUEUE=2 / AGENTS=3 / KPI=4 / SYSTEM COMMENT=5 / ACTUAL=6 */
+  /* FORECAST: match chart height to the SVG viewBox (560:138) ratio and strip padding between chart and legend. Block height is auto. */
+  #outlook-block {
+    order: 1;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    padding: 6px 12px 6px;
+    gap: 2px;
+  }
+  #outlook-head { padding: 0; margin-bottom: 0; }
+  #forecast-panel { flex: 0 0 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; gap: 0; }
+  #forecast-chart {
+    flex: 0 0 auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 560 / 138;
+    min-height: 0;
+    max-height: none;
+    display: block;
+  }
+  #outlook-legend { font-size: 9px; gap: 10px; margin-top: 0; padding: 1px 0 0; line-height: 1.1; }
+  .section-title { font-size: 9px; }
+
+  /* QUEUE: compressed to less than half height */
+  #queue-panel {
+    order: 2;
+    flex: 0 0 auto;
+    padding: 2px 12px 3px;
+    gap: 1px;
+    border-bottom: 1px solid var(--line);
+  }
+  #queue-panel .panel-title { font-size: 8px; letter-spacing: 0.14em; }
+  #queue-calls { height: 14px; gap: 2px; }
+  .call-icon { width: 14px; }
+  .call-phone { font-size: 8px; line-height: 1; }
+  .call-pbar { width: 12px; height: 2px; }
+
+  /* AGENTS: further compacted (20px height, 5 columns, tighter spacing) */
+  #agent-panel {
+    order: 3;
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: 0;
+    border-left: none;
+    border-top: 1px solid var(--line);
+    padding: 4px 10px 6px;
+    gap: 3px;
+  }
+  #agent-meta { gap: 6px; }
+  #agent-meta > .panel-title { font-size: 8px; letter-spacing: 0.14em; }
+  #agent-fatigue { font-size: 9px; gap: 3px; white-space: nowrap; }
+  #agent-fatigue .panel-title { font-size: 7px; letter-spacing: 0.04em; }
+  #agent-fatigue #fatigue-header { font-size: 9px !important; letter-spacing: 0.02em; text-shadow: none !important; }
+  #agent-summary { font-size: 8px; gap: 6px; flex-wrap: wrap; line-height: 1.2; }
+  #agent-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 2px;
+    flex: 0 0 auto;
+  }
+  .agent-card {
+    height: 20px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+    overflow: hidden;
+  }
+  .agent-card .a-bar { display: none; }
+  .a-id { font-size: 6px; line-height: 1; letter-spacing: 0.02em; flex: 0 0 auto; }
+  .a-status { font-size: 7px; line-height: 1; font-weight: 700; flex: 1; text-align: center; }
+  .a-timer { font-size: 6px; line-height: 1; flex: 0 0 auto; min-width: 18px; text-align: right; }
+  #agent-answer-panel { min-height: 0; padding-top: 3px; }
+  #agent-change-row { gap: 5px; padding-top: 4px; margin-top: 4px; }
+  #agent-change-row .change-label { font-size: 8px; letter-spacing: 0.12em; }
+  #agent-delta-display { font-size: 13px !important; min-width: 30px !important; }
+  #agent-count-row { margin-top: 4px !important; padding-top: 4px !important; gap: 8px !important; }
+  #agent-count-row span:first-child { font-size: 8px !important; letter-spacing: 0.12em !important; }
+  #agent-count-display { font-size: 14px !important; }
+
+  /* KPI (order 4) — metrics-panel is flattened via display:contents, so styles apply directly to kpi-block/actual-block */
+  #kpi-block {
+    order: 4;
+    flex: 0 0 auto;
+    padding: 8px 12px;
+    border-top: 1px solid var(--line);
+    min-width: 0;
+  }
+  #phase-table { display: none !important; }
+
+  /* SYSTEM COMMENT (order 5) — placed above ACTUAL */
+  #result-panel {
+    order: 5;
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 70px;
+    max-height: none;
+    padding: 6px 12px 8px;
+    border-top: 1px solid var(--line);
+    gap: 3px;
+  }
+  #result-title { font-size: 9px; margin-bottom: 2px; }
+  #result-body { font-size: 9px; line-height: 1.4; }
+  #alert-bar { font-size: 10px; }
+
+  /* ACTUAL (order 6) */
+  #actual-block {
+    order: 6;
+    flex: 0 0 auto;
+    padding: 8px 12px 12px;
+    border-top: 1px solid var(--line);
+    min-width: 0;
+  }
+  .metrics-col + .metrics-col {
+    border-left: none;
+    padding-left: 0;
+  }
+  .metrics-head { font-size: 9px; }
+  .metric-stack, .stat-stack { gap: 7px; }
+  .metric-row { grid-template-columns: 72px 1fr 46px 80px; gap: 8px; font-size: 10px; align-items: center; }
+  .m-bar { width: 100%; min-width: 0; height: 7px; }
+  .m-label, .s-label { font-size: 9px; }
+  .m-val, .s-val { font-size: 10px; }
+  .m-note { font-size: 8px; }
+  .stat-row { font-size: 10px; }
+
+  /* Controls footer: in iPhone portrait, hide #controls (MODEL/SPEED/PAUSE) entirely and pin the CHANGE/APPLY bar as the footer */
+  #controls {
+    display: none !important;
+  }
+
+  /* CHANGE / APPLY bar — pinned to the very bottom as the new footer */
+  #agent-change-row {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 48px;
+    margin-top: 0;
+    padding: 6px 12px calc(6px + env(safe-area-inset-bottom)) 12px;
+    border-top: 1px solid var(--line);
+    background: rgba(9,14,19,0.96);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    z-index: 20;
+  }
+  #agent-change-row .change-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    flex-shrink: 0;
+  }
+  #agent-change-row #btn-delta-down,
+  #agent-change-row #btn-delta-up {
+    padding: 7px 14px !important;
+    min-width: 44px !important;
+    font-size: 13px !important;
+  }
+  #agent-change-row #agent-delta-display {
+    font-size: 16px !important;
+    min-width: 34px !important;
+  }
+  #agent-change-row #btn-apply {
+    flex: 1 !important;
+    padding: 8px 10px !important;
+    font-size: 10px !important;
+  }
+
+  /* Reserve space so scrollable main content doesn't hide under the pinned CHANGE/APPLY footer */
+  #main {
+    padding-bottom: 52px;
+  }
+}
+
 </style>
 </head>
 <body>
 <div id="game">
   <div id="header">
-    <div id="title" class="g-green">CC DEFENDER2</div>
+    <div id="title" class="g-green">CALL CENTER DEFENDER</div>
     <div id="header-phase">
       <span id="forecast-phase-cur"></span>
       <span id="header-phase-next"><span class="ph-tag">NEXT</span><span id="forecast-phase-next"></span></span>
@@ -382,7 +712,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
       <div id="agent-meta">
         <div class="panel-title g-green">AGENTS</div>
         <div id="agent-fatigue">
-          <span class="panel-title">AHT×</span>
+          <span class="panel-title">AHT PENALTY</span>
           <span id="fatigue-header" class="g-green">NORMAL</span>
         </div>
       </div>
@@ -412,13 +742,13 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
     <div id="right-panel">
       <div id="outlook-block">
         <div id="outlook-head">
-          <div class="section-title g-green">Outlook</div>
+          <div class="section-title g-green">CALL VOLUME FORECAST</div>
         </div>
         <div id="forecast-panel">
           <svg id="forecast-chart" viewBox="0 0 560 138" preserveAspectRatio="xMidYMid meet" aria-label="forecast chart"></svg>
           <div id="outlook-legend">
-            <span style="color:#6dbfc2">— forecast</span>
-            <span style="color:#00ff41">— answered (5m avg)</span>
+            <span style="color:#6dbfc2">— Forecast</span>
+            <span style="color:#00ff41">— Actual (In SL, 15-min rolling)</span>
           </div>
         </div>
       </div>
@@ -441,7 +771,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
               <span class="m-note" id="sl-note">ON TARGET</span>
             </div>
             <div class="metric-row">
-              <span class="m-label" id="forecast-label">Predict SL</span>
+              <span class="m-label" id="forecast-label">Projected SL</span>
               <div class="m-bar"><div class="m-fill" id="erl-bar" style="width:0%"></div><div class="m-target" style="left:80%"></div></div>
               <span class="m-val g-cyan" id="erl-val">0.0%</span>
               <span class="m-note" id="forecast-note">ON TRACK</span>
@@ -459,7 +789,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
         <div class="metrics-col" id="actual-block">
           <div class="metrics-head">Actual</div>
           <div class="stat-stack">
-            <div class="stat-row"><span class="s-label">Offer</span><span class="s-val g-white" id="total-calls">0</span></div>
+            <div class="stat-row"><span class="s-label">Offered</span><span class="s-val g-white" id="total-calls">0</span></div>
             <div class="stat-row"><span class="s-label">Answered</span><span class="s-val g-white" id="total-ans">0</span></div>
             <div class="stat-row"><span class="s-label">Answer Rate</span><span class="s-val g-white" id="answer-rate-val">0.0%</span></div>
             <div class="stat-row"><span class="s-label">In SL</span><span class="s-val g-white" id="total-sl">0</span></div>
@@ -473,8 +803,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
       <div id="result-panel">
         <div id="result-title">System Comment</div>
         <div id="alert-bar"></div>
-        <div id="result-body" class="g-white">9時間の営業日を運営し、SL ≥ 80%とOccupancy 70-90%の2条件を守ってください。</div>
-        <div id="result-model" class="g-cyan" style="display:none">MODEL: ERLANG C</div>
+        <div id="result-body" class="g-white">Run the 9-hour shift and keep both SL ≥ 80% and Occupancy 70-90%.</div>
         <div id="result-accuracy" class="g-cyan"></div>
       </div>
 
@@ -559,7 +888,8 @@ function fixedPointLambda(lambda0, mu, theta, s, maxQ, redial) {
 }
 
 function erlangXPlusSL(callsPerHour, periodMin, ahtSec, slTimeSec, agents, patienceSec, redial) {
-  if (agents <= 0 || callsPerHour <= 0) return 0;
+  if (agents <= 0) return 0;
+  if (callsPerHour <= 0) return 1;    // no arrivals => SL is trivially 1 (match Erlang C)
   const mu = 1 / ahtSec;
   const theta = 1 / patienceSec;
   const lambda0 = callsPerHour / (periodMin * 60);
@@ -571,14 +901,31 @@ function erlangXPlusSL(callsPerHour, periodMin, ahtSec, slTimeSec, agents, patie
 }
 
 function erlangCSL(callsPerHour, periodMin, ahtSec, slTimeSec, agents) {
-  if (agents <= 0 || callsPerHour <= 0) return 0;
+  // Classical Erlang C service-level formula (M/M/s, infinite queue, no abandonment).
+  //   lambda  = callsPerHour / (periodMin * 60)   [calls per second]
+  //   A (erl) = lambda * ahtSec                    [offered load]
+  //   rho     = A / s                              [utilization, must be < 1]
+  //
+  //                        (A^s / s!) * s / (s - A)
+  //   C(s, A) = --------------------------------------------------
+  //             sum_{k=0}^{s-1} A^k/k!  +  (A^s/s!) * s / (s - A)
+  //
+  //   SL(T) = 1 - C(s, A) * exp(-(s - A) * T / ahtSec)
+  //
+  // Requires s to be a positive integer. Callers may pass a fractional agent
+  // count (e.g. from effectiveAgentsForPhase); if we don't round, the loop
+  // `k < agents` and the post-loop `term *= A/agents` disagree on which "s"
+  // they mean -- the result stays finite but the C formula is ill-defined.
+  if (agents <= 0) return 0;
+  agents = Math.max(1, Math.round(agents));
+  if (callsPerHour <= 0) return 1;              // no arrivals => all trivially within SL
   const offeredLoad = (callsPerHour / (periodMin * 60)) * ahtSec;
   if (offeredLoad <= 1e-9) return 1;
-  if (offeredLoad >= agents) return 0;
-  let sum = 1.0, term = 1.0;
+  if (offeredLoad >= agents) return 0;          // unstable queue, grows without bound
+  let sum = 1.0, term = 1.0;                    // sum accumulates A^k/k! for k=0..s-1
   for (let k = 1; k < agents; k++) { term *= offeredLoad / k; sum += term; }
-  term *= offeredLoad / agents;
-  const tail = term * (agents / (agents - offeredLoad));
+  term *= offeredLoad / agents;                 // term is now A^s / s!
+  const tail = term * (agents / (agents - offeredLoad));  // (A^s/s!) * s/(s-A)
   const erlangC = tail / (sum + tail);
   const exponent = -((agents - offeredLoad) * slTimeSec) / ahtSec;
   return clip01(1 - erlangC * Math.exp(exponent));
@@ -607,12 +954,12 @@ const GAME_RULES = {
   adjustCooldownSec: 15 * 60,
   adjustStep: 2,
   maxIdleHours: 35,
-  budgetMax: 35 * 3600, // 旧KPI参照値（NPT導入後は表示には使わないが compat のため残す）
-  nptTargetMax: 0.30,        // legacy上限(= 1 - occupancyRangeMin)。projection関数の互換用
-  occupancyRangeMin: 0.70,   // Occupancy下限。これ未満は"人員過多"扱い＋AHTがやや遅くなる(×ahtPenaltyLow)
-  occupancyRangeMax: 0.90,   // Occupancy上限。これ超過は"過負荷"扱い＋AHTが大幅に遅くなる(×ahtPenaltyHigh)
-  ahtPenaltyLow: 1.10,       // Occupancy < 70% 時のAHT倍率(やや遅い)
-  ahtPenaltyHigh: 1.30,      // Occupancy > 90% 時のAHT倍率(とても遅い)
+  budgetMax: 35 * 3600, // Legacy KPI reference. Not shown in the UI after the NPT refactor; kept for compatibility.
+  nptTargetMax: 0.30,        // Legacy upper bound (= 1 - occupancyRangeMin). Used by the projection helpers.
+  occupancyRangeMin: 0.70,   // Occupancy lower bound. Below = overstaffed + AHT slightly slow (×ahtPenaltyLow).
+  occupancyRangeMax: 0.90,   // Occupancy upper bound. Above = overloaded + AHT markedly slow (×ahtPenaltyHigh).
+  ahtPenaltyLow: 1.10,       // AHT multiplier when Occupancy < 70% (slightly slow).
+  ahtPenaltyHigh: 1.30,      // AHT multiplier when Occupancy > 90% (markedly slow).
   fatigueEnabled: false,
   difficulty: 'normal',
   costPerAgentPerSec: 1.0,
@@ -787,19 +1134,21 @@ function nextPhase() {
 function currentSL() { return S.totalAnswered > 0 ? S.totalAnsweredInSL / S.totalAnswered : 1; }
 
 function currentOcc() {
-  const active = S.agents.filter(a => a.status === 'busy' || a.status === 'ringing').length;
+  // Occupancy snapshot: (BUSY + RINGING + WRAP) / on-seat headcount (excl. LUNCH/BREAK)
+  const active = S.agents.filter(a => a.status === 'busy' || a.status === 'ringing' || a.status === 'wrap').length;
   const available = S.agents.filter(a => a.status !== 'lunch' && a.status !== 'break').length;
   return available > 0 ? active / available : 0;
 }
 
 function cumulativeOcc() {
-  return S.totalStaffedAgentSec > 0 ? clip01(S.totalBusyAgentSec / S.totalStaffedAgentSec) : currentOcc();
+  // Running Occupancy: (BUSY + WRAP) seconds over on-seat seconds. Matches the displayed Occupancy metric.
+  return S.totalStaffedAgentSec > 0 ? clip01((S.totalBusyAgentSec + S.totalWrapSec) / S.totalStaffedAgentSec) : currentOcc();
 }
 
 function currentNPT() {
-  // Occupancy = (BUSY + WRAP) / (BUSY + WRAP + IDLE)  ← BREAK/LUNCHは分母から除外 (Logged-in time only)
-  // IDLE% = 1 - Occupancy = IDLE / (BUSY + WRAP + IDLE)  目標 ≤ 20% (= Occupancy 70-90%)
-  // 関数名はNPTだが実体はIDLE%を返す (UI側で Occupancy = 1 - currentNPT() として表示)。
+  // Occupancy = (BUSY + WRAP) / (BUSY + WRAP + IDLE)  ← BREAK/LUNCH excluded from denominator (Logged-in time only)
+  // IDLE% = 1 - Occupancy = IDLE / (BUSY + WRAP + IDLE)  target ≤ 20% (= Occupancy 70-90%)
+  // Function is named NPT for legacy reasons but returns IDLE% (UI renders Occupancy = 1 - currentNPT()).
   const idleSec = S.totalCost - S.totalWrapSec - S.totalBreakSec;
   const loggedInSec = S.totalBusyAgentSec + S.totalWrapSec + idleSec;
   return loggedInSec > 0 ? clip01(idleSec / loggedInSec) : 0;
@@ -812,17 +1161,17 @@ function currentFatigueMultiplier() {
 }
 
 function liveOccupancy() {
-  // 現在のOccupancy = (BUSY + RINGING + WRAP) / 在席人数(lunch/break除外)
-  // = 今この瞬間に通話/ラップで手が塞がっている割合。
+  // Live Occupancy = (BUSY + RINGING + WRAP) / on-seat headcount (excl. lunch/break)
+  // = fraction of staffed agents currently tied up on a call or wrap.
   const onCall = S.agents.filter(a => a.status === 'busy' || a.status === 'ringing' || a.status === 'wrap').length;
   const loggedIn = S.agents.filter(a => a.status !== 'lunch' && a.status !== 'break').length;
   return loggedIn > 0 ? onCall / loggedIn : 0;
 }
 
 function currentOccupancyAhtMultiplier() {
-  // Occupancyレンジ外はAHTにペナルティ:
-  //   < occupancyRangeMin(70%): 暇すぎて集中が落ちる → ×ahtPenaltyLow (やや遅い)
-  //   > occupancyRangeMax(90%): 過負荷で疲弊        → ×ahtPenaltyHigh (とても遅い)
+  // AHT penalty when Occupancy sits outside the target band:
+  //   < occupancyRangeMin (70%): focus drops from being too idle → ×ahtPenaltyLow (slightly slow)
+  //   > occupancyRangeMax (90%): overloaded and burning out      → ×ahtPenaltyHigh (markedly slow)
   const occ = liveOccupancy();
   if (occ > GAME_RULES.occupancyRangeMax) return GAME_RULES.ahtPenaltyHigh;
   if (occ < GAME_RULES.occupancyRangeMin) return GAME_RULES.ahtPenaltyLow;
@@ -884,7 +1233,7 @@ function projectedFinalNPT(agentCount = S.agents.length) {
     const wrapSec = handled * CFG.wrapSec;
     const idleSec = Math.max(0, segLoggedIn - busySec - wrapSec);
 
-    idleSecAcc  += idleSec;     // BREAKは分母にも分子にも含めない
+    idleSecAcc  += idleSec;     // BREAK is excluded from both numerator and denominator
     loggedInSec += segLoggedIn;
   }
   return loggedInSec > 0 ? clip01(idleSecAcc / loggedInSec) : 0;
@@ -918,45 +1267,119 @@ function isEarlyOverstaffed() {
   );
 }
 
+// ---- Prediction calibration helpers ----------------------------------------
+// The raw Erlang formulas systematically over-predict SL in this sim because:
+//   (1) they use CFG.ahtSec (talk only) as the service time, ignoring the extra
+//       seat time per call from ring (3s) + wrap (30s) -- roughly an 11% load
+//       under-statement;
+//   (2) they have no model of the occupancy AHT penalty (x1.10 when
+//       occupancy < 70%, x1.30 when > 90%), so they miss the overload spiral;
+//   (3) they treat S.agents.length as fully available, even during LUNCH where
+//       one lunch-batch (6) is off-seat at any time, and during MORNING/EVENING
+//       break rotations;
+//   (4) they miss the overflow-agent penalty (AHT x1.5 for agents beyond the
+//       initial headcount).
+// These helpers correct the per-segment AHT and on-seat agent count before
+// feeding them into the Erlang C / Erlang X+ solvers.
+function effectiveAgentsForPhase(totalAgents, phase) {
+  const total = Math.max(1, totalAgents);
+  if (!phase) return total;
+  if (phase.key === 'lunch') {
+    // One lunch-batch is on 1h lunch at any moment during LUNCH rotation.
+    return Math.max(1, total - GAME_RULES.lunchBatchSize);
+  }
+  if (phase.key === 'morning' || phase.key === 'evening') {
+    // Average agents off-seat during break rotation = (batch * breakSec) / phaseSec.
+    const avgOff = (GAME_RULES.breakBatchSize * GAME_RULES.breakDurationSec) / phase.durationSec;
+    return Math.max(1, total - avgOff);
+  }
+  return total;
+}
+
+function effectiveAhtForPrediction(callsPerHour, agents) {
+  // Full per-call seat time: ring + talk + wrap.
+  const baseSec = CFG.ahtSec + CFG.wrapSec + CFG.ringTimeSec;
+  const n = Math.max(1, agents);
+  // Agent-weighted blend of core agents (x1.0) and overflow agents (xoverflowAhtMultiplier).
+  const coreAgents = Math.min(n, GAME_RULES.initialAgents);
+  const overflowAgents = Math.max(0, n - GAME_RULES.initialAgents);
+  const weighted = overflowAgents === 0
+    ? baseSec
+    : (coreAgents * baseSec + overflowAgents * baseSec * GAME_RULES.overflowAhtMultiplier) / n;
+  // Fatigue multiplier (engaged only on HARD difficulty).
+  const fatigue = currentFatigueMultiplier();
+  // Occupancy-dependent AHT penalty, estimated from steady-state utilization.
+  const rho = (callsPerHour * weighted * fatigue) / (3600 * n);
+  let penalty = 1;
+  if (rho > GAME_RULES.occupancyRangeMax) penalty = GAME_RULES.ahtPenaltyHigh;
+  else if (rho < GAME_RULES.occupancyRangeMin) penalty = GAME_RULES.ahtPenaltyLow;
+  return weighted * fatigue * penalty;
+}
+// ---------------------------------------------------------------------------
+
 function predictSL(modelKey, callsPerHour, agents) {
+  const effAht = effectiveAhtForPrediction(callsPerHour, agents);
   switch (modelKey) {
     case 'shrinkage': {
       const capacityPerHour = capacityPerHourForAgents(agents);
       return clip01(capacityPerHour / Math.max(callsPerHour, 1e-9));
     }
     case 'erlang_c':
-      return erlangCSL(callsPerHour, CFG.periodMin, CFG.ahtSec, CFG.slTimeSec, agents);
+      return erlangCSL(callsPerHour, CFG.periodMin, effAht, CFG.slTimeSec, agents);
     case 'erlang_x':
     default:
-      return erlangXPlusSL(callsPerHour, CFG.periodMin, CFG.ahtSec, CFG.slTimeSec, agents, CFG.patienceSec, CFG.redial);
+      return erlangXPlusSL(callsPerHour, CFG.periodMin, effAht, CFG.slTimeSec, agents, CFG.patienceSec, CFG.redial);
   }
 }
 
-function predictSegmentOutcome(modelKey, callsPerHour, agents) {
+function predictSegmentOutcome(modelKey, callsPerHour, agents, phase) {
   if (agents <= 0 || callsPerHour <= 0) {
     return { answerRate: 0, metricNumeratorRate: 0, metricDenominatorRate: 0 };
   }
-  const offeredLoad = (callsPerHour / (CFG.periodMin * 60)) * CFG.ahtSec;
+  // Calibration: strip LUNCH/BREAK off-seat agents out of the effective headcount,
+  // and feed a full per-call seat time (ring + talk + wrap) plus overflow/occupancy
+  // AHT penalties into the Erlang solvers. See the effective* helpers above predictSL.
+  //
+  // CRITICAL (regression fix 2026-04-23):
+  // steadyState / fixedPointLambda index a Float64Array by the server count `s`.
+  // A non-integer `s` -> `p[s]` returns undefined -> delayProb/blockProb become NaN
+  // -> predictSegmentOutcome returns NaN rates -> projectedLandingSL accumulates NaN
+  // -> the `metricDenominator > 0` guard fires and silently returns 1.0
+  // (i.e. Projected SL = 100% even when the system is badly overloaded).
+  // effectiveAgentsForPhase subtracts a fractional break-rotation coverage
+  // (e.g. morning: 6 * 900 / 6300 = 0.857), so always round to an integer >= 1.
+  const effAgents = Math.max(1, Math.round(effectiveAgentsForPhase(agents, phase)));
+  const effAht = effectiveAhtForPrediction(callsPerHour, effAgents);
   switch (modelKey) {
     case 'shrinkage': {
-      const capacityPerHour = capacityPerHourForAgents(agents);
+      const capacityPerHour = capacityPerHourForAgents(effAgents);
       const answerRate = clip01(capacityPerHour / Math.max(callsPerHour, 1e-9));
       return { answerRate, metricNumeratorRate: answerRate, metricDenominatorRate: 1 };
     }
     case 'erlang_c':
-      return { answerRate: 1, metricNumeratorRate: erlangCSL(callsPerHour, CFG.periodMin, CFG.ahtSec, CFG.slTimeSec, agents), metricDenominatorRate: 1 };
+      return { answerRate: 1, metricNumeratorRate: erlangCSL(callsPerHour, CFG.periodMin, effAht, CFG.slTimeSec, effAgents), metricDenominatorRate: 1 };
     case 'erlang_x':
     default: {
-      const mu = 1 / CFG.ahtSec;
+      const mu = 1 / effAht;
       const theta = 1 / CFG.patienceSec;
       const lambda0 = callsPerHour / (CFG.periodMin * 60);
-      const fp = fixedPointLambda(lambda0, mu, theta, agents, ERLANG_MAX_Q, CFG.redial);
-      const answerRate = clip01(1 - fp.blockProb);
-      const lambdaAcc = fp.lambdaEff * answerRate;
-      let gamma = agents * mu + theta - lambdaAcc;
+      const fp = fixedPointLambda(lambda0, mu, theta, effAgents, ERLANG_MAX_Q, CFG.redial);
+      // servedRate = fraction of arrivals that are neither blocked nor abandoned.
+      // Previously we used answerRate = (1 - blockProb), which left abandoned calls
+      // in the denominator and made the SL ratio systematically optimistic. The sim
+      // defines SL = totalAnsweredInSL / totalAnswered with abandoned calls excluded
+      // from totalAnswered, so use the same definition here.
+      const servedRate = clip01(1 - fp.blockProb - fp.abandonFrac);
+      const lambdaAcc = fp.lambdaEff * servedRate;
+      let gamma = effAgents * mu + theta - lambdaAcc;
       if (gamma < 1e-12) gamma = 1e-12;
-      const inSlProb = clip01(answerRate - fp.delayProb * Math.exp(-gamma * CFG.slTimeSec));
-      return { answerRate, metricNumeratorRate: inSlProb, metricDenominatorRate: answerRate };
+      // P(offered AND served within slTimeSec). Blocked / long-wait-abandoned calls are out-of-SL.
+      const inSlProb = clip01(servedRate - fp.delayProb * Math.exp(-gamma * CFG.slTimeSec));
+      return {
+        answerRate: servedRate,
+        metricNumeratorRate: inSlProb,
+        metricDenominatorRate: servedRate
+      };
     }
   }
 }
@@ -986,12 +1409,145 @@ function projectedLandingSL(modelKey, agents = Math.max(1, S.agents.length)) {
   let metricDenominator = modelKey === 'shrinkage' ? S.totalCalls : S.totalAnswered;
   for (const segment of remainingScenarioSegments()) {
     const expectedCalls = (segment.callsPerHour * segment.durationSec) / 3600;
-    const outcome = predictSegmentOutcome(modelKey, segment.callsPerHour, agents);
-    metricNumerator += expectedCalls * outcome.metricNumeratorRate;
-    metricDenominator += expectedCalls * outcome.metricDenominatorRate;
+    const outcome = predictSegmentOutcome(modelKey, segment.callsPerHour, agents, segment.phase);
+    // Defensive: never let a NaN leak from the solver into the accumulator. A polluted
+    // metricDenominator would make `metricDenominator > 0` false and silently return 1.0.
+    const numRate = Number.isFinite(outcome.metricNumeratorRate) ? outcome.metricNumeratorRate : 0;
+    const denRate = Number.isFinite(outcome.metricDenominatorRate) ? outcome.metricDenominatorRate : 0;
+    metricNumerator += expectedCalls * numRate;
+    metricDenominator += expectedCalls * denRate;
   }
-  return metricDenominator > 0 ? clip01(metricNumerator / metricDenominator) : 1;
+  if (!Number.isFinite(metricNumerator) || !Number.isFinite(metricDenominator)) return 0;
+  return metricDenominator > 0 ? clip01(metricNumerator / metricDenominator) : 0;
 }
+
+// ---- Erlang self-check / regression harness --------------------------------
+// Run `window.__verifyErlang()` from the browser console to validate:
+//   * Erlang C matches classical textbook values (rho = 0.83 -> SL ~ 0.89, etc.)
+//   * Erlang X+ reduces to Erlang C when abandonment/redial are disabled
+//   * Erlang X+ >= Erlang C when abandonment is active (abandoners shorten queue)
+//   * Overloaded Erlang X+ returns a finite value that is NOT silently 1.0
+//   * predictSegmentOutcome never produces NaN rates (regression for the
+//     fractional-effAgents -> NaN -> Projected SL=100% bug)
+//   * projectedLandingSL returns a finite value and is not stuck at 1.0 on overload
+function __verifyErlang() {
+  const results = [];
+  const check = (name, ok, detail) => results.push({ test: name, status: ok ? 'PASS' : 'FAIL', detail });
+  const approx = (a, b, eps) => Math.abs(a - b) <= eps;
+
+  // --- Erlang C: textbook sanity ------------------------------------------
+  // Hand-calc for rho=0.833 (A=15, s=18):
+  //   sum_{k=0..17} 15^k/k! = 2,448,032
+  //   15^18/18! = 230,885
+  //   tail = 230,885 * 18/(18-15) = 1,385,310
+  //   C = 1,385,310 / (2,448,032 + 1,385,310) = 0.3614
+  //   SL(T=20, AHT=300) = 1 - 0.3614 * exp(-0.2) = 0.7040
+  const c1 = erlangCSL(180, 60, 300, 20, 18);   // 15 erl on 18 agents (rho=0.833)
+  check('Erlang C rho=0.833 SL ~ 0.704', approx(c1, 0.7040, 0.01), `got ${c1.toFixed(4)}`);
+  const c2 = erlangCSL(300, 60, 300, 20, 10);   // 25 erl on 10 agents -> overload
+  check('Erlang C overload returns 0', c2 === 0, `got ${c2}`);
+  const c3 = erlangCSL(0, 60, 300, 20, 10);     // no arrivals -> SL = 1 (fixed 2026-04-23)
+  check('Erlang C zero arrivals returns 1', c3 === 1, `got ${c3}`);
+  const c4 = erlangCSL(5, 60, 60, 20, 5);       // very light load -> SL ~ 1
+  check('Erlang C light load SL > 0.99', c4 > 0.99, `got ${c4.toFixed(4)}`);
+
+  // --- Erlang C: additional structural checks ------------------------------
+  // M/M/1 sanity: rho=0.5, T=AHT -> SL = 1 - rho*exp(-(1-rho)*T/AHT) = 0.6967
+  const mm1 = erlangCSL(1800, 60, 1, 1, 1);  // lambda=0.5/s, AHT=T=1s, s=1
+  check('Erlang C M/M/1 (rho=0.5) SL ~ 0.697', approx(mm1, 0.6967, 0.005), `got ${mm1.toFixed(4)}`);
+
+  // Monotonicity: SL is non-decreasing in staff count at fixed offered load.
+  let monotonic = true, prev = -1, monFail = '';
+  for (let n = 10; n <= 25; n++) {
+    const sl = erlangCSL(180, 60, 300, 20, n);
+    if (sl < prev - 1e-9) { monotonic = false; monFail = `n=${n}: ${sl.toFixed(4)} < ${prev.toFixed(4)}`; break; }
+    prev = sl;
+  }
+  check('Erlang C monotonic in staff count', monotonic, monFail || 'ok');
+
+  // T -> inf: SL approaches 1 (given enough time, everyone is served).
+  const cLongT = erlangCSL(180, 60, 300, 100000, 18);
+  check('Erlang C T->inf SL -> 1', cLongT > 0.999, `got ${cLongT.toFixed(6)}`);
+
+  // T = 0: SL = P(wait = 0) = 1 - C(s, A). For s=18, A=15, C=0.3614 so SL=0.6386.
+  const cT0 = erlangCSL(180, 60, 300, 0, 18);
+  check('Erlang C T=0 SL = 1 - C(18,15) ~ 0.639', approx(cT0, 0.6386, 0.005), `got ${cT0.toFixed(4)}`);
+
+  // Fractional agents: must round to integer s and stay finite (not silently drift).
+  const cFrac = erlangCSL(180, 60, 300, 20, 18.4);
+  const cInt  = erlangCSL(180, 60, 300, 20, 18);
+  check('Erlang C fractional agents -> finite', Number.isFinite(cFrac), `got ${cFrac}`);
+  check('Erlang C fractional agents rounded to int', approx(cFrac, cInt, 1e-9),
+    `frac=${cFrac.toFixed(6)} int=${cInt.toFixed(6)}`);
+
+  // Large staff / light load: factorial growth must not overflow.
+  const cBig = erlangCSL(120, 60, 300, 20, 40);
+  check('Erlang C large staff stable', Number.isFinite(cBig) && cBig > 0.99, `got ${cBig.toFixed(4)}`);
+
+  // predictSegmentOutcome (Erlang C path) must bake in the occupancy AHT penalty:
+  // at rho ~ 0.90+ the effective AHT picks up x1.30, which drags SL below the
+  // penalty-free Erlang C answer. This catches regressions in effectiveAhtForPrediction.
+  const afternoon = SCENARIO_PHASES.find(p => p.key === 'afternoon');
+  const segC = predictSegmentOutcome('erlang_c', 220, 14, afternoon);
+  const rawC = erlangCSL(220, 60, 300, 20, 14);  // no AHT penalty
+  check('Erlang C segment <= raw C (penalty reflected)',
+    Number.isFinite(segC.metricNumeratorRate) && segC.metricNumeratorRate <= rawC + 1e-6,
+    `seg=${segC.metricNumeratorRate.toFixed(4)} raw=${rawC.toFixed(4)}`);
+
+  // --- Erlang X+ structural checks ----------------------------------------
+  // With no abandonment (huge patience) and no redial, X+ must collapse to C.
+  const exNoAbd = erlangXPlusSL(180, 60, 300, 20, 18, 1e9, 0);
+  check('Erlang X+ (no abandon/redial) ~= Erlang C', approx(exNoAbd, c1, 0.03),
+    `x+=${exNoAbd.toFixed(4)} c=${c1.toFixed(4)}`);
+
+  // With abandonment active, X+ SL >= C SL at the same load (shorter queues).
+  const exAbd = erlangXPlusSL(200, 60, 300, 20, 15, 90, 0);
+  const cCmp  = erlangCSL(200, 60, 300, 20, 15);
+  check('Erlang X+ >= Erlang C under abandonment', exAbd >= cCmp - 0.005,
+    `x+=${exAbd.toFixed(4)} c=${cCmp.toFixed(4)}`);
+
+  // Heavy overload must return a finite value, and crucially must NOT be ~1.0.
+  const exOv = erlangXPlusSL(400, 60, 300, 20, 13, 90, 0.2);
+  check('Erlang X+ heavy overload is finite', Number.isFinite(exOv), `got ${exOv}`);
+  check('Erlang X+ heavy overload < 0.5', exOv < 0.5, `got ${exOv.toFixed(4)}`);
+
+  // --- Regression: fractional effAgents must not poison the projection ----
+  const morning = SCENARIO_PHASES.find(p => p.key === 'morning');
+  const segOut = predictSegmentOutcome('erlang_x', 180, 13, morning);
+  check('Segment numerator finite', Number.isFinite(segOut.metricNumeratorRate),
+    `got ${segOut.metricNumeratorRate}`);
+  check('Segment denominator finite', Number.isFinite(segOut.metricDenominatorRate),
+    `got ${segOut.metricDenominatorRate}`);
+  const segRatio = segOut.metricNumeratorRate / Math.max(segOut.metricDenominatorRate, 1e-9);
+  check('Segment morning@13 predicts SL < 0.5 (overloaded)', segRatio < 0.5,
+    `num=${segOut.metricNumeratorRate.toFixed(4)} den=${segOut.metricDenominatorRate.toFixed(4)} ratio=${segRatio.toFixed(4)}`);
+
+  // --- End-to-end: projectedLandingSL must not silently return 1.0 --------
+  const agentsForProj = Math.max(1, (S.agents && S.agents.length) || GAME_RULES.startingAgents);
+  const projX = projectedLandingSL('erlang_x', agentsForProj);
+  const projC = projectedLandingSL('erlang_c', agentsForProj);
+  check('projectedLandingSL erlang_x is finite', Number.isFinite(projX), `got ${projX}`);
+  check('projectedLandingSL erlang_c is finite', Number.isFinite(projC), `got ${projC}`);
+  // At 13 agents running through morning+lunch+evening, the landing SL must not pin at 1.0.
+  if (agentsForProj <= 14) {
+    check('projectedLandingSL erlang_x not pinned at 1.0 (13 agents)', projX < 0.999,
+      `got ${projX.toFixed(4)} (agents=${agentsForProj})`);
+  }
+
+  console.table(results);
+  const failed = results.filter(r => r.status === 'FAIL');
+  if (failed.length === 0) {
+    console.log('%c✓ All Erlang self-checks passed (' + results.length + ' tests).', 'color:#00ff41;font-weight:700');
+  } else {
+    console.warn('✗ ' + failed.length + ' of ' + results.length + ' Erlang self-checks FAILED', failed);
+  }
+  return results;
+}
+if (typeof window !== 'undefined') {
+  window.__verifyErlang = __verifyErlang;
+  console.info('[Call Center Defender] Erlang self-check available: window.__verifyErlang()');
+}
+// ---------------------------------------------------------------------------
 
 function recommendedAgentsForCallRate(callsPerHour) {
   // Smallest staff count whose Erlang C SL >= targetSL + 5pp buffer.
@@ -1021,16 +1577,16 @@ function phaseAdvanceHint() {
   const nextCalls = next.rampTo !== undefined ? (next.callsPerHour + next.rampTo) / 2 : next.callsPerHour;
   const mins = Math.ceil(minutes);
   if (nextCalls <= 5) {
-    return { level: 'ok', text: `${mins}分後にCLOSING（コール減少）。REDUCEで人員を減らす好機です。` };
+    return { level: 'ok', text: `CLOSING in ${mins} min (call volume dropping). Good window to REDUCE headcount.` };
   }
   const rec = recommendedAgentsForCallRate(nextCalls);
   const have = S.agents.length + S.pendingAgents.length;
   const diff = rec - have;
   if (diff >= 2) {
-    return { level: 'critical', text: `${mins}分後に${next.label}（${Math.round(nextCalls)}/hr）。推奨${rec}人／現在${have}人。+${diff} のADDを今すぐ。` };
+    return { level: 'critical', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. ADD +${diff} now.` };
   }
   if (diff <= -2) {
-    return { level: 'ok', text: `${mins}分後に${next.label}（${Math.round(nextCalls)}/hr）。推奨${rec}人／現在${have}人。${-diff} のREDUCEを検討。` };
+    return { level: 'ok', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. Consider REDUCE ${-diff}.` };
   }
   return null;
 }
@@ -1158,26 +1714,26 @@ function finishGame() {
   else if (finalOcc > GAME_RULES.occupancyRangeMax) reasons.push('OCC ABOVE RANGE');
 
   const reasonText = [];
-  if (reasons.includes('SL MISSED')) reasonText.push('増員判断が遅れ、SL 80%に届きませんでした。');
+  if (reasons.includes('SL MISSED')) reasonText.push('Staffing decisions lagged and SL fell short of 80%.');
   if (reasons.includes('OCC BELOW RANGE')) {
     reasonText.push(
       S.lunchHireCount > 0
-        ? 'Lunch帯で慌てて増員し、後半のOccupancyが下限(70%)を下回りました。'
+        ? 'Scrambled to ADD during LUNCH, and Occupancy fell below the lower bound (70%) in the afternoon.'
         : S.sawEarlyOverstaffing
-        ? '序盤に人を入れすぎ、Occupancyが下限(70%)を下回りました。AHTも微妙に遅くなりました。'
-        : '人員配置が多すぎてOccupancyが下限(70%)を下回りました。AHTも微妙に遅くなりました。'
+        ? 'Overstaffed early: Occupancy fell below the lower bound (70%) and AHT ran slightly slow.'
+        : 'Too many agents on the floor: Occupancy fell below the lower bound (70%) and AHT ran slightly slow.'
     );
   }
   if (reasons.includes('OCC ABOVE RANGE')) {
-    reasonText.push('人員不足でOccupancyが上限(90%)を超過し、AHTペナルティ(×1.30)が累積しました。ADDのタイミングが遅れました。');
+    reasonText.push('Understaffed: Occupancy exceeded the upper bound (90%) and the AHT penalty (×1.30) accumulated. ADD was applied too late.');
   }
 
   const forecasts = S.lastLandingForecasts || forecastBundle();
   const occRangeLabel = `${Math.round(GAME_RULES.occupancyRangeMin*100)}-${Math.round(GAME_RULES.occupancyRangeMax*100)}%`;
   const summary = reasons.length === 0
-    ? `SL ≥ ${Math.round(GAME_RULES.targetSL*100)}% と Occupancy ${occRangeLabel} の2条件を守って9時間を運営できました。`
+    ? `Cleared the 9-hour shift while holding both SL ≥ ${Math.round(GAME_RULES.targetSL*100)}% and Occupancy ${occRangeLabel}.`
     : reasonText.join(' ').trim();
-  const modelSummary = `最終SL ${fmtPct(currentSL())} / Occupancy ${fmtPct(finalOcc)} (目標 ${occRangeLabel})`;
+  const modelSummary = `Final SL ${fmtPct(currentSL())} / Occupancy ${fmtPct(finalOcc)} (target ${occRangeLabel})`;
 
   setResult(reasons.length === 0 ? 'ACHIEVED' : 'MISSED', reasons, summary, modelSummary, forecasts);
   addLog(reasons.length === 0 ? 'MISSION ACHIEVED' : `MISSION MISSED: ${reasons.join(' / ')}`, reasons.length === 0 ? 'green' : 'red');
@@ -1255,13 +1811,13 @@ function simStep(dt) {
   S.totalStaffedAgentSec += staffedAgents * dt;
   S.totalQueueDepthSec += S.queue.length * dt;
   S.totalAgentSec += S.agents.length * dt;
-  // Per Call請求モデル: idle / wrap / break の時間だけコストが発生する
-  // busy/ringing は通話料で請求されるためコスト対象外、lunchは無給で対象外
+  // Per-call billing model: cost accrues only during idle / wrap / break.
+  // busy/ringing are covered by per-call billing; lunch is unpaid.
   const payableAgents = S.agents.filter(a => a.status === 'idle' || a.status === 'wrap' || a.status === 'break').length;
   S.totalCost += payableAgents * GAME_RULES.costPerAgentPerSec * dt;
   if (!S.sawEarlyOverstaffing && isEarlyOverstaffed()) {
     S.sawEarlyOverstaffing = true;
-    addLog('OVERSTAFFED EARLY: budget burn is too high', 'orange');
+    addLog('OVERSTAFFED EARLY: occupancy pacing below range', 'orange');
   }
 
   // Arrivals: per-step Bernoulli using the current (possibly ramping) rate.
@@ -1334,7 +1890,7 @@ function simStep(dt) {
 
   // Rolling sample for the "actual answered" trail on the forecast chart.
   if (S.simTime - S.lastAnsweredSampleTime >= 30) {
-    S.answeredSamples.push({ t: S.simTime, answered: S.totalAnswered, offered: S.totalCalls });
+    S.answeredSamples.push({ t: S.simTime, answered: S.totalAnswered, answeredInSL: S.totalAnsweredInSL, offered: S.totalCalls });
     S.lastAnsweredSampleTime = S.simTime;
   }
 
@@ -1399,7 +1955,7 @@ function renderQueue() {
   const html = display.map(call => {
     const pct = Math.max(0, 1 - call.waitTime / call.patience);
     const col = pct > 0.55 ? '#00ff41' : pct > 0.25 ? '#ffff00' : '#ff3333';
-    const icon = pct < 0.2 ? '!' : '☎';
+    const icon = pct < 0.2 ? '!' : '📞';
     return `<div class="call-icon">` +
       `<div class="call-phone" style="color:${col}">${icon}</div>` +
       `<div class="call-pbar"><div class="call-pfill" style="width:${pct * 100}%;background:${col}"></div></div>` +
@@ -1413,7 +1969,7 @@ function renderQueue() {
 
 function renderMetrics() {
   const sl = currentSL();
-  // OPENING中は全バーをグレーで「WARMING UP」表示（SL/Occupancy/Predict SL共通）
+  // During OPENING all bars render grey as 'WARMING UP' (applies to SL / Occupancy / Projected SL).
   const isWarmup = currentPhase().key === 'opening';
   const warmupCol = 'rgba(180,200,212,0.55)';
   const slBaseCol = sl >= 0.9 ? '#00ff41' : sl >= 0.8 ? '#cccc00' : sl >= 0.65 ? '#ff8800' : '#ff3333';
@@ -1429,14 +1985,14 @@ function renderMetrics() {
   const forecasts = forecastBundle();
   S.lastLandingForecasts = forecasts;
   const selectedForecast = forecasts[S.predictionModel];
-  // ① OPENING中・フェーズ切替後3分はPredict SLを灰色で「WARMING UP」表示
+  // (1) Show Projected SL as grey 'WARMING UP' during OPENING and for 3 minutes after each phase change.
   const forecastInOpening = currentPhase().key === 'opening';
   const phaseElapsedSinceStart = S.simTime - (S.phaseStartSim || 0);
   const isForecastWarmup = forecastInOpening || phaseElapsedSinceStart < 180;
   const forecastCol = isForecastWarmup
     ? 'rgba(180,200,212,0.55)'
     : (selectedForecast >= 0.8 ? '#00ffff' : selectedForecast >= 0.65 ? '#ff8800' : '#ff3333');
-  $('forecast-label').textContent = 'Predict SL';
+  $('forecast-label').textContent = 'Projected SL';
   $('erl-bar').style.cssText = `width:${selectedForecast * 100}%;background:${forecastCol}`;
   $('erl-val').textContent = fmtPct(selectedForecast);
   $('erl-val').style.color = forecastCol;
@@ -1447,7 +2003,7 @@ function renderMetrics() {
   $('forecast-note').textContent = forecastNote;
   $('forecast-note').style.color = forecastCol;
 
-  // ⑨ 自然回復フィードバック: SLがdipし予測SLがOKなら「様子見」、回復したら祝う
+  // (9) Natural-recovery feedback: if SL dips but projected SL is OK, reward patience when SL recovers.
   if (!forecastInOpening && S.totalAnswered > 15) {
     const landingOk = selectedForecast >= GAME_RULES.targetSL;
     if (!S.slDipActive && sl < 0.70 && landingOk) {
@@ -1460,7 +2016,7 @@ function renderMetrics() {
         const holdMin = Math.max(1, Math.round((S.simTime - S.slDipStartTime) / 60));
         const dropPct = Math.round(S.slDipPeakDrop * 100);
         S.slDipActive = false;
-        addLog(`SL自然回復 ✓ ${dropPct}%→目標まで${holdMin}分で回復。予測SLを信じて様子見が正解でした。`, 'green');
+        addLog(`SL RECOVERED ✓ Dipped to ${dropPct}%, returned to target in ${holdMin} min. Trusting the projection paid off.`, 'green');
         document.body.classList.add('recovery-flash');
         const gameEl = document.getElementById('game');
         if (gameEl) gameEl.classList.add('recovery');
@@ -1490,7 +2046,7 @@ function renderMetrics() {
     queueAvgEl.textContent = queueAvg.toFixed(1);
     queueAvgEl.style.color = queueAvg > 5 ? '#ff3333' : queueAvg > 2 ? '#ff8800' : '#00ff41';
   }
-  // AHTペナルティ状態をヘッダに表示(Occupancyレンジ外のときに点灯)
+  // Show the AHT penalty state in the header (lights up when Occupancy is outside the target band).
   const occAhtMul = currentOccupancyAhtMultiplier();
   if (occAhtMul >= GAME_RULES.ahtPenaltyHigh) {
     $('fatigue-header').textContent = `OVERLOAD ×${occAhtMul.toFixed(2)}`;
@@ -1507,8 +2063,8 @@ function renderMetrics() {
   }
 
   const occupancyPct = 1 - currentNPT();
-  // Occupancyのバー／値／ノートはすべて「その時点までの累計Occupancy」で判定する(着地予測ではない)。
-  // ラベル(occNote)を先に決め、その色をバー／値色にもそのまま使う(アラート色とバー色を一致させる)。
+  // The Occupancy bar / value / note are all evaluated against the cumulative Occupancy so far (not the landing projection).
+  // Decide the note (occNote) first, then reuse its color for bar and value (keeps alert color and bar color consistent).
   const occMin = GAME_RULES.occupancyRangeMin;
   const occMax = GAME_RULES.occupancyRangeMax;
   let occNote;
@@ -1536,7 +2092,7 @@ function renderMetrics() {
   const applyLabel = $('btn-apply-label');
   if (applyLabel) {
     if (S.finalResult !== 'RUNNING') {
-      applyLabel.textContent = 'DAY COMPLETE';
+      applyLabel.textContent = 'SHIFT COMPLETE';
     } else if (!canAdjustAgents()) {
       const adjustRemain = Math.max(0, S.nextAdjustTime - S.simTime);
       applyLabel.textContent = `NEXT ADJUST ${fmtDur(adjustRemain)}`;
@@ -1575,17 +2131,21 @@ function renderForecastChart() {
   const innerH = height - pad.top - pad.bottom;
   const maxCalls = Math.max(...SCENARIO_PHASES.map(p => p.callsPerHour)) * 1.08;
 
-  const points = SCENARIO_PHASES.map((phase, index) => {
-    const x = pad.left + (phaseStartSec(index) / GAME_RULES.gameDurationSec) * innerW;
-    const y = pad.top + innerH - (phase.callsPerHour / maxCalls) * innerH;
-    return { x, y, phase };
-  });
-  const lastPhase = SCENARIO_PHASES[SCENARIO_PHASES.length - 1];
-  const lastVal = lastPhase.rampTo !== undefined ? lastPhase.rampTo : lastPhase.callsPerHour;
-  points.push({
-    x: pad.left + innerW,
-    y: pad.top + innerH - (lastVal / maxCalls) * innerH,
-    phase: lastPhase
+  // Piecewise-exact Forecast polyline: 2 vertices per phase (start + end).
+  // Flat phases -> horizontal segment; OPENING/CLOSING ramps -> diagonal; phase boundaries -> vertical jump.
+  // This matches the true Forecast function (SCENARIO_PHASES) with zero information loss.
+  const points = [];
+  SCENARIO_PHASES.forEach((phase, index) => {
+    const startSec = phaseStartSec(index);
+    const endSec = startSec + phase.durationSec;
+    const startVal = phase.callsPerHour;
+    const endVal = phase.rampTo !== undefined ? phase.rampTo : phase.callsPerHour;
+    const xStart = pad.left + (startSec / GAME_RULES.gameDurationSec) * innerW;
+    const xEnd = pad.left + (endSec / GAME_RULES.gameDurationSec) * innerW;
+    const yStart = pad.top + innerH - (startVal / maxCalls) * innerH;
+    const yEnd = pad.top + innerH - (endVal / maxCalls) * innerH;
+    points.push({ x: xStart, y: yStart, phase });
+    points.push({ x: xEnd, y: yEnd, phase });
   });
 
   const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
@@ -1623,8 +2183,9 @@ function renderForecastChart() {
   // reads cleanly against the PLAN curve instead of bouncing on Poisson noise.
   const actualSamples = S.answeredSamples || [];
   const actualPoints = [];
-  const windowSec = 300;     // 5-minute rolling window for a stable rate read
-  const minWindowSec = 120;  // require >=2 min of data before plotting a point
+  const windowSec = 900;     // 15-minute rolling window. Wider than 5 min to smooth Poisson variance:
+                              // at low SL the 5-min count frequently hit 0 (P(0)≈14% when mean=2 events), making the line appear flat at 0.
+  const minWindowSec = 300;  // require >=5 min of data before plotting a point
   let lastActualRate = 0;
   for (let i = 0; i < actualSamples.length; i++) {
     const cur = actualSamples[i];
@@ -1639,10 +2200,11 @@ function renderForecastChart() {
     }
     const elapsedSec = cur.t - earlier.t;
     if (elapsedSec < minWindowSec) continue;
-    const rate = ((cur.answered - earlier.answered) * 3600) / elapsedSec;
-    lastActualRate = rate;
+    // Plot the In-SL count within the 15-min rolling window (件数 / 15 min). Same Y axis as PLAN.
+  const count = (cur.answeredInSL || 0) - (earlier.answeredInSL || 0);
+    lastActualRate = count;
     const ax = pad.left + (cur.t / GAME_RULES.gameDurationSec) * innerW;
-    const ay = pad.top + innerH - (Math.min(rate, maxCalls * 1.05) / maxCalls) * innerH;
+    const ay = pad.top + innerH - (Math.min(count * 4, maxCalls * 1.05) / maxCalls)  /* Actual: scale 15-min count to hourly rate to share PLAN's calls/hr Y-axis */ * innerH;
     actualPoints.push({ x: ax, y: ay });
   }
   const actualPath = actualPoints.length >= 2
@@ -1691,10 +2253,10 @@ function renderAlert() {
   const inOpening = currentPhase().key === 'opening';
   if (S.finalResult === 'ACHIEVED') { msg = 'MISSION ACHIEVED'; col = '#00ff41'; }
   else if (S.finalResult === 'MISSED') { msg = S.finalReasons[0] || 'MISSION MISSED'; col = '#ff3333'; }
-  else if (inOpening) { msg = 'WARMING UP — MORNINGに向けて準備中'; col = '#7ea8ff'; }
+  else if (inOpening) { msg = 'WARMING UP — PREPARING FOR MORNING RUSH'; col = '#7ea8ff'; }
   else if (isEarlyOverstaffed()) { msg = 'OVERSTAFFED EARLY'; col = '#ff8800'; }
-  else if ((1 - currentNPT()) < GAME_RULES.occupancyRangeMin) { msg = 'OCCUPANCY BELOW RANGE (OVERSTAFFED)'; col = '#ff3333'; }
-  else if ((1 - currentNPT()) > GAME_RULES.occupancyRangeMax) { msg = 'OCCUPANCY ABOVE RANGE — AHT PENALTY'; col = '#ff3333'; }
+  else if ((1 - currentNPT()) < GAME_RULES.occupancyRangeMin) { msg = 'OCCUPANCY BELOW RANGE — SLIGHT AHT PENALTY'; col = '#ff3333'; }
+  else if ((1 - currentNPT()) > GAME_RULES.occupancyRangeMax) { msg = 'OCCUPANCY ABOVE RANGE — HEAVY AHT PENALTY'; col = '#ff3333'; }
   else if (GAME_RULES.fatigueEnabled && cumulativeOcc() > GAME_RULES.occDangerThreshold) { msg = 'HIGH OCCUPANCY RISK'; col = '#ff8800'; }
   else if (qLen >= 40) { msg = `CRITICAL QUEUE: ${qLen} CALLS WAITING`; col = '#ff3333'; }
   else if (qLen >= 20) { msg = `HIGH QUEUE: ${qLen} CALLS WAITING`; col = '#ff8800'; }
@@ -1731,52 +2293,52 @@ function renderResultPanel() {
     let hint = '';
     if (inOpening) {
       level = 'ok';
-      hint = 'OPENING中。MORNINGでコールが180/hrに急増します。Outlookの推奨人員(REC)と現在の人員を見比べてADDの要否を判断してください。この時間帯のOccupancy低下は想定内です。';
+      hint = 'OPENING phase. Calls ramp to 180/hr in MORNING. Compare the recommended staffing on the CALL VOLUME FORECAST with your current roster to decide whether to ADD. A low Occupancy reading here is expected.';
     } else if (advance) {
       level = advance.level;
       hint = advance.text;
     } else if (sl < GAME_RULES.targetSL && S.totalAnswered > 15 && landingForecast >= GAME_RULES.targetSL) {
       level = 'ok';
-      hint = `SLが一時的に${Math.round(sl*100)}%に落ちていますがSL予測(LANDING ${Math.round(landingForecast*100)}%)は目標維持中。あわてて増員せず様子見が正解です。`;
+      hint = `SL has temporarily dipped to ${Math.round(sl*100)}%, but the landing projection (${Math.round(landingForecast*100)}%) is still on target. Hold staffing steady — trust the projection.`;
     } else if ((1 - currentNPT()) < GAME_RULES.occupancyRangeMin) {
       level = 'critical';
-      hint = `Occupancyが下限(${Math.round(GAME_RULES.occupancyRangeMin*100)}%)を下回っています(人員過多)。REDUCEで人員を減らしてください。AHTもやや遅く(×${GAME_RULES.ahtPenaltyLow.toFixed(2)})なっています。`;
+      hint = `Occupancy is below the lower bound (${Math.round(GAME_RULES.occupancyRangeMin*100)}%) — overstaffed. REDUCE headcount. AHT is also slightly slow (×${GAME_RULES.ahtPenaltyLow.toFixed(2)}).`;
     } else if ((1 - currentNPT()) > GAME_RULES.occupancyRangeMax) {
       level = 'critical';
-      hint = `Occupancyが上限(${Math.round(GAME_RULES.occupancyRangeMax*100)}%)を超過(過負荷)。AHTが大幅に遅く(×${GAME_RULES.ahtPenaltyHigh.toFixed(2)})なっています。ADDで人員を増やしてください。`;
+      hint = `Occupancy is above the upper bound (${Math.round(GAME_RULES.occupancyRangeMax*100)}%) — overloaded. AHT is markedly slow (×${GAME_RULES.ahtPenaltyHigh.toFixed(2)}). ADD headcount.`;
     } else if (qLen >= 30) {
       level = 'critical';
-      hint = `キューが${qLen}件まで膨らんでいます。早急にADDを検討してください。`;
+      hint = `Queue has grown to ${qLen} calls. Consider ADD immediately.`;
     } else if (landingForecast < GAME_RULES.targetSL - 0.05) {
       level = 'critical';
-      hint = 'SL予測が目標を大きく下回っています。ADDを検討してください。';
+      hint = 'Projected SL is well below target. Consider ADD.';
     } else if (landingForecast < GAME_RULES.targetSL) {
       level = 'warn';
-      hint = 'SL予測が目標を下回っています。ADDを検討してください。';
+      hint = 'Projected SL is below target. Consider ADD.';
     } else if (isEarlyOverstaffed()) {
       level = 'warn';
-      hint = '序盤の人員過多でOccupancyが下限未達ペースです。REDUCEを検討してください。';
+      hint = 'Overstaffed early — Occupancy is pacing below the lower bound. Consider REDUCE.';
     } else if (pace.label === 'BELOW RANGE') {
       level = 'warn';
-      hint = 'Occupancyの着地が下限未達ペース(人員過多)。REDUCEで人員を減らしてください。';
+      hint = 'Occupancy is pacing to land below the lower bound (overstaffed). REDUCE headcount.';
     } else if (pace.label === 'ABOVE RANGE') {
       level = 'warn';
-      hint = 'Occupancyの着地が上限超過ペース(過負荷)。ADDで人員を増やしてAHTペナルティを回避してください。';
+      hint = 'Occupancy is pacing to land above the upper bound (overloaded). ADD headcount to avoid the AHT penalty.';
     } else if (GAME_RULES.fatigueEnabled && occ > GAME_RULES.occDangerThreshold) {
       level = 'warn';
-      hint = '稼働率が高くFATIGUEリスクがあります。ADDを検討してください。';
+      hint = 'High utilization is raising fatigue risk. Consider ADD.';
     } else if (qLen >= 10) {
       level = 'warn';
-      hint = `キューが${qLen}件あります。SL低下に注意してください。`;
+      hint = `Queue holds ${qLen} calls. Watch for SL erosion.`;
     } else if (sl < GAME_RULES.targetSL && S.totalAnswered > 10) {
       level = 'warn';
-      hint = '現状SLが目標未達です。次フェーズまでにADDを検討してください。';
+      hint = 'Current SL is below target. Consider ADD before the next phase.';
     } else if (pace.label === 'TIGHT') {
       level = 'warn';
-      hint = 'Occupancyの着地がタイトです。追加増員は慎重に判断してください。';
+      hint = 'Occupancy landing is tight. Any further headcount increase should be cautious.';
     } else {
       level = 'ok';
-      hint = 'SL・Occupancyともに順調です。このペースを維持してください。';
+      hint = 'SL and Occupancy are both on track. Maintain this pace.';
     }
     const levelColors = { ok: '#00ff41', warn: '#dba94e', critical: '#ff3333' };
     const levelIcons = { ok: '🟢', warn: '🟡', critical: '🔴' };
@@ -1795,7 +2357,7 @@ function renderResultPanel() {
       .map(([key, val]) => ({ key, err: Math.abs(val - actual) }))
       .sort((a, b) => a.err - b.err);
     const best = entries[0];
-    accDiv.textContent = '6H予測精度 → ' +
+    accDiv.textContent = '6H FORECAST ACCURACY → ' +
       entries.map(e => `${modelLabel(e.key)} ±${(e.err * 100).toFixed(1)}%`).join(' / ') +
       `  BEST: ${modelLabel(best.key)}`;
     accDiv.style.display = 'block';
@@ -1897,7 +2459,7 @@ function resetAll() {
   $('btn-pause').textContent = '▐▐ PAUSE';
   applySpeedStop(SPEED_STOPS.indexOf(GAME_RULES.defaultSpeed));
   setAgentDelta(0);
-  addLog('営業日シミュレーションをリセットしました。', 'green');
+  addLog('Shift simulation reset.', 'green');
   renderMetrics();
   renderClock();
   renderAlert();
