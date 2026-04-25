@@ -34,6 +34,8 @@ body {
   justify-content: center;
   overflow: hidden;
   user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body::after {
@@ -102,11 +104,25 @@ body::after {
 
 #header-right {
   display: flex;
+  align-items: center;
+  gap: 10px;
   margin-left: auto;
   justify-content: flex-end;
   white-space: nowrap;
   font-size: 11px;
   color: var(--header-ink);
+}
+
+#btn-mobile-reset {
+  display: none;
+  background: none;
+  border: 1px solid rgba(217,95,95,0.4);
+  color: var(--red);
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 2px 6px;
+  cursor: pointer;
+  line-height: 1;
 }
 
 #main { display: flex; flex: 1; min-height: 0; flex-direction: row-reverse; }
@@ -302,6 +318,9 @@ body::after {
   text-transform: uppercase;
   flex-shrink: 0;
   white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 #btn-minus, #btn-plus { min-width: 68px; text-align: center; }
@@ -502,6 +521,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
   #header-phase #header-phase-next { font-size: 8px; gap: 3px; }
   #header-phase .ph-tag { font-size: 7px; }
   #header-right { font-size: 10px; }
+  #btn-mobile-reset { display: block; padding: 4px 8px; font-size: 13px; }
 
   /* Main: stack vertically; flatten right-panel + metrics-panel so children join #main directly.
      This lets us reorder KPI / SYSTEM COMMENT / ACTUAL independently. */
@@ -704,6 +724,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
     </div>
     <div id="header-right">
       <span class="g-cyan" id="sim-clock">TIME LEFT: 08:00:00</span>
+      <button id="btn-mobile-reset">↺</button>
     </div>
   </div>
 
@@ -801,7 +822,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
       </div>
 
       <div id="result-panel">
-        <div id="result-title">System Comment</div>
+        <div id="result-title">ADVISOR</div>
         <div id="alert-bar"></div>
         <div id="result-body" class="g-white">Run the 9-hour shift and keep both SL ≥ 80% and Occupancy 70-90%.</div>
         <div id="result-accuracy" class="g-cyan"></div>
@@ -824,6 +845,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
     </div>
     <div class="ctrl-group">
       <button class="ctrl-btn pause-btn" id="btn-pause">▐▐ PAUSE</button>
+      <button class="ctrl-btn reset-btn" id="btn-reset">↺ RESET</button>
     </div>
   </div>
 </div>
@@ -1576,17 +1598,17 @@ function phaseAdvanceHint() {
   if (!next) return null;
   const nextCalls = next.rampTo !== undefined ? (next.callsPerHour + next.rampTo) / 2 : next.callsPerHour;
   const mins = Math.ceil(minutes);
-  if (nextCalls <= 5) {
-    return { level: 'ok', text: `CLOSING in ${mins} min (call volume dropping). Good window to REDUCE headcount.` };
+  if (next.key === 'closing') {
+    return { level: 'ok', text: `CLOSING in ${mins} min (call volume will ramp down). Good window to REDUCE headcount.` };
   }
   const rec = recommendedAgentsForCallRate(nextCalls);
   const have = S.agents.length + S.pendingAgents.length;
   const diff = rec - have;
   if (diff >= 2) {
-    return { level: 'critical', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. ADD +${diff} now.` };
+    return { level: 'critical', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Consider ADD before the transition.` };
   }
   if (diff <= -2) {
-    return { level: 'ok', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. Consider REDUCE ${-diff}.` };
+    return { level: 'ok', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Consider REDUCE before the transition.` };
   }
   return null;
 }
@@ -2278,7 +2300,7 @@ function renderResultPanel() {
   const body  = $('result-body');
   const model = $('result-model');
   const accDiv = $('result-accuracy');
-  title.textContent = 'System Comment';
+  title.textContent = 'ADVISOR';
   title.className = '';
 
   if (S.finalResult === 'RUNNING') {
@@ -2293,7 +2315,7 @@ function renderResultPanel() {
     let hint = '';
     if (inOpening) {
       level = 'ok';
-      hint = 'OPENING phase. Calls ramp to 180/hr in MORNING. Compare the recommended staffing on the CALL VOLUME FORECAST with your current roster to decide whether to ADD. A low Occupancy reading here is expected.';
+      hint = 'OPENING phase. Calls ramp from 80/hr to 180/hr in MORNING BUILD. Compare the recommended staffing on the CALL VOLUME FORECAST with your current roster to decide whether to ADD. A low Occupancy reading here is expected.';
     } else if (advance) {
       level = advance.level;
       hint = advance.text;
@@ -2332,7 +2354,7 @@ function renderResultPanel() {
       hint = `Queue holds ${qLen} calls. Watch for SL erosion.`;
     } else if (sl < GAME_RULES.targetSL && S.totalAnswered > 10) {
       level = 'warn';
-      hint = 'Current SL is below target. Consider ADD before the next phase.';
+      hint = 'Current SL is below target. Consider ADD.';
     } else if (pace.label === 'TIGHT') {
       level = 'warn';
       hint = 'Occupancy landing is tight. Any further headcount increase should be cautious.';
@@ -2344,7 +2366,7 @@ function renderResultPanel() {
     const levelIcons = { ok: '🟢', warn: '🟡', critical: '🔴' };
     const hintCol = levelColors[level];
     const hintIcon = levelIcons[level];
-    body.innerHTML = `<span style="color:${hintCol}">${hintIcon} HINT:</span> ${hint}`;
+    body.innerHTML = `<span style="color:${hintCol}">${hintIcon}</span> ${hint}`;
     accDiv.style.display = 'none';
     return;
   }
@@ -2496,6 +2518,9 @@ $('btn-pause').addEventListener('click', () => {
   S.paused = !S.paused;
   $('btn-pause').textContent = S.paused ? '▶ RESUME' : '▐▐ PAUSE';
 });
+
+$('btn-reset').addEventListener('click', () => resetAll());
+$('btn-mobile-reset').addEventListener('click', () => resetAll());
 
 let agentDelta = 0;
 
