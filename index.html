@@ -2,18 +2,76 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YFZVHTPSH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-8YFZVHTPSH');
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Call Center Defender</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ============================================================
+   Briefing overlay (Start screen)
+   ============================================================ */
+#briefing-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+}
+#briefing-overlay.hidden { display: none; }
+#briefing-card {
+  width: min(720px, 96vw);
+  max-height: min(720px, 84vh);
+  overflow: auto;
+  border: 1px solid var(--line-md);
+  border-radius: 16px;
+  background: rgba(12, 20, 27, 0.92);
+  box-shadow: 0 28px 90px rgba(0,0,0,0.60), inset 0 1px 0 rgba(255,255,255,0.04);
+  padding: 18px 18px 16px;
+}
+#briefing-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--header-ink);
+}
+#briefing-sub {
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+}
+#briefing-body { margin-top: 12px; font-size: 11px; line-height: 1.6; color: var(--ink); }
+#briefing-body strong { color: var(--header-ink); }
+#briefing-body ul { margin: 8px 0 0 18px; }
+#briefing-body li { margin: 6px 0; }
+#briefing-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+#btn-start-shift {
+  border-color: rgba(0,255,65,0.35);
+  color: #00ff41;
+  background: rgba(0,255,65,0.08);
+}
+#btn-start-shift:hover {
+  border-color: rgba(0,255,65,0.70);
+  background: rgba(0,255,65,0.12);
+  color: #e8f2f6;
+}
+#btn-hints { border-color: rgba(126,168,255,0.35); color: var(--cyan); background: rgba(126,168,255,0.10); }
+#btn-hints:hover { border-color: rgba(126,168,255,0.70); background: rgba(126,168,255,0.14); color: #e8f2f6; }
+#briefing-hints { display: none; margin-top: 8px; padding-top: 10px; border-top: 1px dashed rgba(100,135,155,0.28); }
+#briefing-hints.show { display: block; }
 
 :root {
   --bg:           #090e13;
@@ -112,25 +170,11 @@ body::after {
 
 #header-right {
   display: flex;
-  align-items: center;
-  gap: 10px;
   margin-left: auto;
   justify-content: flex-end;
   white-space: nowrap;
   font-size: 11px;
   color: var(--header-ink);
-}
-
-#btn-mobile-reset {
-  display: none;
-  background: none;
-  border: 1px solid rgba(217,95,95,0.4);
-  color: var(--red);
-  font-family: var(--font);
-  font-size: 13px;
-  padding: 2px 6px;
-  cursor: pointer;
-  line-height: 1;
 }
 
 #main { display: flex; flex: 1; min-height: 0; flex-direction: row-reverse; }
@@ -529,7 +573,6 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
   #header-phase #header-phase-next { font-size: 8px; gap: 3px; }
   #header-phase .ph-tag { font-size: 7px; }
   #header-right { font-size: 10px; }
-  #btn-mobile-reset { display: block; padding: 4px 8px; font-size: 13px; }
 
   /* Main: stack vertically; flatten right-panel + metrics-panel so children join #main directly.
      This lets us reorder KPI / SYSTEM COMMENT / ACTUAL independently. */
@@ -723,6 +766,48 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
 </style>
 </head>
 <body>
+<div id="briefing-overlay" role="dialog" aria-modal="true" aria-label="Game briefing">
+  <div id="briefing-card">
+    <div id="briefing-title" class="g-green">CALL CENTER DEFENDER</div>
+    <div id="briefing-sub">BRIEFING</div>
+
+    <div id="briefing-body">
+      <div><strong>Goal:</strong> Run the 9-hour shift (adjustable via SPEED) and handle incoming demand. Clear the game by achieving <strong>both</strong> KPIs below at the same time.</div>
+      <ul>
+        <li><strong>SL ≥ 80%</strong> (answered within 20 seconds)</li>
+        <li><strong>Occupancy 70%–90%</strong> (low = overstaffed / high = overload)</li>
+      </ul>
+
+      <div style="margin-top:10px"><strong>What you can do</strong></div>
+      <ul>
+        <li><strong>Staffing adjustments only</strong> (use ADD / REDUCE)</li>
+        <li>Some rules simulate real operations (see <strong>Constraints</strong> below)</li>
+        <li>To restart, press <strong>RESET</strong></li>
+      </ul>
+
+      <div style="margin-top:10px"><strong>Constraints</strong></div>
+      <ul>
+        <li><strong>ADD is not immediate</strong>: new agents arrive after a 10-minute lead time.</li>
+        <li><strong>Adjustments have a cooldown</strong>: after you change staffing, you cannot change it again for 15 minutes.</li>
+        <li>While <strong>Occupancy is out of range</strong>, an AHT penalty applies and the situation can snowball quickly.</li>
+      </ul>
+
+      <div id="briefing-hints">
+        <div style="margin-top:10px"><strong>HINTS</strong></div>
+        <ul>
+          <li><strong>Projected SL</strong> is a “landing forecast” computed from real-time results using <strong>Erlang C / Erlang X+</strong>. Don’t react impulsively—use it to decide proactively.</li>
+          <li>Watch the <strong>gap between Forecast and Actual</strong> (top chart) and adjust ahead of the next phase to stay stable.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div id="briefing-actions">
+      <button class="ctrl-btn" id="btn-hints">HINTS</button>
+      <button class="ctrl-btn" id="btn-start-shift">START SHIFT</button>
+    </div>
+  </div>
+</div>
+
 <div id="game">
   <div id="header">
     <div id="title" class="g-green">CALL CENTER DEFENDER</div>
@@ -731,8 +816,8 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
       <span id="header-phase-next"><span class="ph-tag">NEXT</span><span id="forecast-phase-next"></span></span>
     </div>
     <div id="header-right">
+      <button class="ctrl-btn" id="btn-briefing" style="margin-right:10px">BRIEFING</button>
       <span class="g-cyan" id="sim-clock">TIME LEFT: 08:00:00</span>
-      <button id="btn-mobile-reset">↺</button>
     </div>
   </div>
 
@@ -830,7 +915,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
       </div>
 
       <div id="result-panel">
-        <div id="result-title">ADVISOR</div>
+        <div id="result-title">System Comment</div>
         <div id="alert-bar"></div>
         <div id="result-body" class="g-white">Run the 9-hour shift and keep both SL ≥ 80% and Occupancy 70-90%.</div>
         <div id="result-accuracy" class="g-cyan"></div>
@@ -853,7 +938,7 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
     </div>
     <div class="ctrl-group">
       <button class="ctrl-btn pause-btn" id="btn-pause">▐▐ PAUSE</button>
-      <button class="ctrl-btn reset-btn" id="btn-reset">↺ RESET</button>
+      <button class="ctrl-btn reset-btn" id="btn-reset" style="margin-left:8px">RESET</button>
     </div>
   </div>
 </div>
@@ -866,6 +951,82 @@ body.recovery-flash::after { background: radial-gradient(ellipse at center, rgba
 const ERLANG_MAX_Q = 500;
 const SIM_DT = 0.05;
 const $ = id => document.getElementById(id);
+
+// ---- Briefing overlay control --------------------------------------------
+let __briefingPrevPaused = true;
+
+function pauseIfRunning() {
+  const pauseBtn = $('btn-pause');
+  if (!pauseBtn) return;
+  // Button label convention: contains "PAUSE" when running, does not when paused.
+  const isRunning = pauseBtn.textContent && pauseBtn.textContent.indexOf('PAUSE') !== -1;
+  if (isRunning) pauseBtn.click();
+}
+
+function resumeIfWasRunning() {
+  const pauseBtn = $('btn-pause');
+  if (!pauseBtn) return;
+  const isRunning = pauseBtn.textContent && pauseBtn.textContent.indexOf('PAUSE') !== -1;
+  // If currently paused and we were previously running, resume.
+  if (!isRunning && __briefingPrevPaused === false) pauseBtn.click();
+}
+
+function openBriefing() {
+  const ov = $('briefing-overlay');
+  if (!ov) return;
+  const pauseBtn = $('btn-pause');
+  const isRunning = pauseBtn && pauseBtn.textContent && pauseBtn.textContent.indexOf('PAUSE') !== -1;
+  __briefingPrevPaused = !isRunning;
+  ov.classList.remove('hidden');
+  pauseIfRunning();
+}
+
+function showBriefing() {
+  // Initial load behavior: show briefing and ensure paused.
+  const ov = $('briefing-overlay');
+  if (ov) ov.classList.remove('hidden');
+  __briefingPrevPaused = true;
+  pauseIfRunning();
+}
+
+function closeBriefing() {
+  const ov = $('briefing-overlay');
+  if (ov) ov.classList.add('hidden');
+  resumeIfWasRunning();
+}
+
+function hideBriefingAndStart() {
+  // Start Shift closes briefing and resumes.
+  __briefingPrevPaused = false;
+  closeBriefing();
+}
+
+function toggleBriefingHints() {
+  const hints = $('briefing-hints');
+  if (!hints) return;
+  hints.classList.toggle('show');
+}
+
+window.addEventListener('load', () => {
+  showBriefing();
+  const startBtn = $('btn-start-shift');
+  const hintsBtn = $('btn-hints');
+  const briefingBtn = $('btn-briefing');
+  const resetBtn = $('btn-reset');
+  if (startBtn) startBtn.addEventListener('click', hideBriefingAndStart);
+  if (hintsBtn) hintsBtn.addEventListener('click', toggleBriefingHints);
+  if (briefingBtn) briefingBtn.addEventListener('click', openBriefing);
+  if (resetBtn) resetBtn.addEventListener('click', () => location.reload());
+
+  // ESC closes the briefing if open.
+  window.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const ov = $('briefing-overlay');
+    if (!ov || ov.classList.contains('hidden')) return;
+    closeBriefing();
+  });
+});
+// --------------------------------------------------------------------------
 
 function clip01(x) { return Math.max(0, Math.min(1, x)); }
 
@@ -1606,17 +1767,17 @@ function phaseAdvanceHint() {
   if (!next) return null;
   const nextCalls = next.rampTo !== undefined ? (next.callsPerHour + next.rampTo) / 2 : next.callsPerHour;
   const mins = Math.ceil(minutes);
-  if (next.key === 'closing') {
-    return { level: 'ok', text: `CLOSING in ${mins} min (call volume will ramp down). Good window to REDUCE headcount.` };
+  if (nextCalls <= 5) {
+    return { level: 'ok', text: `CLOSING in ${mins} min (call volume dropping). Good window to REDUCE headcount.` };
   }
   const rec = recommendedAgentsForCallRate(nextCalls);
   const have = S.agents.length + S.pendingAgents.length;
   const diff = rec - have;
   if (diff >= 2) {
-    return { level: 'critical', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Consider ADD before the transition.` };
+    return { level: 'critical', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. ADD +${diff} now.` };
   }
   if (diff <= -2) {
-    return { level: 'ok', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Consider REDUCE before the transition.` };
+    return { level: 'ok', text: `${next.label} in ${mins} min (${Math.round(nextCalls)}/hr). Recommended ${rec} / Current ${have}. Consider REDUCE ${-diff}.` };
   }
   return null;
 }
@@ -2308,7 +2469,7 @@ function renderResultPanel() {
   const body  = $('result-body');
   const model = $('result-model');
   const accDiv = $('result-accuracy');
-  title.textContent = 'ADVISOR';
+  title.textContent = 'System Comment';
   title.className = '';
 
   if (S.finalResult === 'RUNNING') {
@@ -2323,7 +2484,7 @@ function renderResultPanel() {
     let hint = '';
     if (inOpening) {
       level = 'ok';
-      hint = 'OPENING phase. Calls ramp from 80/hr to 180/hr in MORNING BUILD. Compare the recommended staffing on the CALL VOLUME FORECAST with your current roster to decide whether to ADD. A low Occupancy reading here is expected.';
+      hint = 'OPENING phase. Calls ramp to 180/hr in MORNING. Compare the recommended staffing on the CALL VOLUME FORECAST with your current roster to decide whether to ADD. A low Occupancy reading here is expected.';
     } else if (advance) {
       level = advance.level;
       hint = advance.text;
@@ -2362,7 +2523,7 @@ function renderResultPanel() {
       hint = `Queue holds ${qLen} calls. Watch for SL erosion.`;
     } else if (sl < GAME_RULES.targetSL && S.totalAnswered > 10) {
       level = 'warn';
-      hint = 'Current SL is below target. Consider ADD.';
+      hint = 'Current SL is below target. Consider ADD before the next phase.';
     } else if (pace.label === 'TIGHT') {
       level = 'warn';
       hint = 'Occupancy landing is tight. Any further headcount increase should be cautious.';
@@ -2374,7 +2535,7 @@ function renderResultPanel() {
     const levelIcons = { ok: '🟢', warn: '🟡', critical: '🔴' };
     const hintCol = levelColors[level];
     const hintIcon = levelIcons[level];
-    body.innerHTML = `<span style="color:${hintCol}">${hintIcon}</span> ${hint}`;
+    body.innerHTML = `<span style="color:${hintCol}">${hintIcon} HINT:</span> ${hint}`;
     accDiv.style.display = 'none';
     return;
   }
@@ -2526,9 +2687,6 @@ $('btn-pause').addEventListener('click', () => {
   S.paused = !S.paused;
   $('btn-pause').textContent = S.paused ? '▶ RESUME' : '▐▐ PAUSE';
 });
-
-$('btn-reset').addEventListener('click', () => resetAll());
-$('btn-mobile-reset').addEventListener('click', () => resetAll());
 
 let agentDelta = 0;
 
